@@ -1,0 +1,7 @@
+<h1>Subscriber Status Lookup</h1>
+<form method="post" action="https://cloud.info.joniandfriends.org/status-processing">
+  
+    <label for="subscriberKey">Enter Subscriber Key:</label>
+    <input type="text" name="subscriberKey" id="subscriberKey" required="">
+    <input type="submit" value="Submit">
+</form>
