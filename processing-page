@@ -1,0 +1,41 @@
+%%[
+SET @subscriberKey = RequestParameter('subscriberkey') /* Retrieve the Subscriber Key into a variable */
+]%%
+
+<script runat="server">
+    Platform.Load("core", "1.1.1");
+    var subKey = Variable.GetValue("@subscriberKey"); // Assign to SSJS variable
+    var subObj = Subscriber.Init(subKey); // Initiate Subscriber Object
+    var listJSON = subObj.Lists.Retrieve(); // Retrieve lists that the subscriber is a part of
+
+    // Create arrays to store lists by status
+    var activeLists = [];
+    var unsubscribedLists = [];
+    var noStatusLists = [];
+    var allSubscribersStatus = "";
+
+    for (var i = 0; i < listJSON.length; i++) { // Loop through all the lists
+        var listName = listJSON[i]["List"]["Name"];
+        var listStatus = listJSON[i]["Status"];
+
+        if (listName == "All Subscribers") {
+            allSubscribersStatus = listStatus;
+        }
+
+        if (listStatus == 'Active') {
+            activeLists.push('<li>' + listName + '</li>');
+        } else if (listStatus == 'Unsubscribed') {
+            unsubscribedLists.push('<li>' + listName + '</li>');
+        } else if (listStatus === null) {
+            noStatusLists.push('<li>' + listName + '</li>');
+        }
+    }
+
+    Write('<ul>');
+    Write('<li><b>Subscriberkey:</b> ' + subKey + '</li>');
+    Write('<li><b>All Subscribers list status:</b> ' + allSubscribersStatus + '</li>');
+    Write('<li><b>Active Lists:</b></li><ul>' + activeLists.join('') + '</ul>');
+    Write('<li><b>Unsubscribed Lists:</b></li><ul>' + unsubscribedLists.join('') + '</ul>');
+    Write('<li><b>No Status Lists:</b></li><ul>' + noStatusLists.join('') + '</ul>');
+    Write('</ul>');
+</script>
